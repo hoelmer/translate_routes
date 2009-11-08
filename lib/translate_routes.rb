@@ -15,6 +15,10 @@ module ActionController
 
       mattr_accessor :original_routes, :original_named_routes, :original_names, :dictionaries
 
+      # Optional scope for translation backend
+      mattr_accessor :translation_scope
+      @@translation_scope = ''
+
       def self.translate
         init_dictionaries
         yield @@dictionaries
@@ -131,7 +135,7 @@ module ActionController
           if @using_i18n
             tmp = I18n.locale
             I18n.locale = locale
-            value = I18n.t segment.value, :default => segment.value.dup
+            value = I18n.t segment.value, :default => segment.value.dup, :scope => @@translation_scope
             I18n.locale = tmp
           else
             value = @@dictionaries[locale][segment.value] || segment.value.dup
